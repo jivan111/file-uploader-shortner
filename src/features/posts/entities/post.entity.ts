@@ -1,5 +1,4 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { LanguageEnum, PlatformEnum } from './post.type';
 import { HydratedDocument } from 'mongoose';
 
 export type PostDocument = HydratedDocument<Post>;
@@ -25,50 +24,13 @@ const ThumbnailSchema = SchemaFactory.createForClass(Thumbnail);
 })
 export class Post {
   @Prop({ type: String, required: true })
-  influencerId: string;
+  userId: string;
 
   @Prop({ type: String, required: true })
   videoUrl: string;
 
-  // @Prop({ type: Boolean, default: false })
-  // isUploaded: boolean;
-
-  // ml generated data
-  @Prop({ type: String })
-  description: string;
-
-  // url of caption /subtitle
-  @Prop({ type: String })
-  caption: string;
-
-  @Prop({ type: String })
-  title: string;
-
-  @Prop({ type: [String] })
-  hashtag: string[];
-
-  @Prop({ type: [ThumbnailSchema] })
-  thumbnail: Thumbnail[];
-
-  // end of ml generated data for posts
-  @Prop({ type: String, enum: PlatformEnum })
-  platform: PlatformEnum;
-
-  @Prop({ type: String, enum: LanguageEnum })
-  language: LanguageEnum;
-
-  @Prop({ type: String })
-  socialChannel: string
 
 
-  @Prop({ type: Boolean, default: false })
-  isDraft: boolean;
-
-  @Prop({ type: Boolean, default: false })
-  isScheduled: boolean;
-
-  @Prop({ type: Date })
-  postTime: Date;
 }
 
 export const PostSchema = SchemaFactory.createForClass(Post);

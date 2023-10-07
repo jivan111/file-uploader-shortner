@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { PostsController } from './posts.controller';
 import { StorageModule } from '@lib/storage/storage.module';
-import { InfluencerModule } from '@features/influencer/influencer.module';
+import { UserModule } from '@features/user/user.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Post, PostSchema } from './entities/post.entity';
 import { QueueModule } from '@lib/queue/queue.module';
@@ -18,10 +18,10 @@ import { QueueModule } from '@lib/queue/queue.module';
       },
     ]),
     StorageModule,
-    InfluencerModule,
+    UserModule,
     QueueModule,
   ],
   controllers: [PostsController],
   providers: [PostsService],
 })
-export class PostsModule {}
+export class PostsModule { }

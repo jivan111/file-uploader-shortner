@@ -6,15 +6,15 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { INVALID_AUTH_TOKEN } from '@src/constants/errors';
-import { InfluencerService } from '@src/features/influencer/influencer.service';
+import { UserService } from '@src/features/user/user.service';
 import { AppJwtService } from '@src/lib/jwt/jwt.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
     private readonly jwtService: AppJwtService,
-    private readonly influencerService: InfluencerService,
-  ) {}
+    private readonly userService: UserService,
+  ) { }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<Request>();
@@ -27,13 +27,13 @@ export class AuthGuard implements CanActivate {
     token = token.split(' ')[1];
 
     const payload = await this.jwtService.validateToken(token);
-    const influencer = await this.influencerService.findById(payload.id);
+    const user = await this.userService.findById(payload.id);
 
-    if (!influencer)
+    if (!user)
       throw new HttpException(INVALID_AUTH_TOKEN, HttpStatus.UNAUTHORIZED);
 
-    const leanInfluencer = influencer.toJSON();
-    request['influencer'] = leanInfluencer;
+    const leanuser = user.toJSON();
+    request['user'] = leanuser;
 
     return true;
   }

@@ -6,7 +6,6 @@ import {
   ValidateNested,
   IsEnum,
 } from 'class-validator';
-import { LanguageEnum } from '../entities/post.type';
 import { Type } from 'class-transformer';
 
 class Thumbnail {
@@ -25,33 +24,10 @@ export class UpdatePostDto {
   @IsOptional()
   isDraft: boolean;
 
-  @IsEnum(LanguageEnum)
-  @IsOptional()
-  language: LanguageEnum;
 
-  @IsString()
-  @IsOptional()
-  title: string;
 
-  @IsString()
-  @IsOptional()
-  caption: string;
 
-  @IsString()
-  @IsOptional()
-  description: string;
 
-  @IsString()
-  @IsOptional()
-  videoUrl: string;
 
-  @IsArray()
-  @IsOptional()
-  hashtag: string[];
 
-  @IsArray()
-  @IsOptional()
-  @ValidateNested({ each: true })
-  @Type(() => Thumbnail)
-  thumbnail: Thumbnail[];
 }

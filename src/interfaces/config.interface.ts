@@ -13,8 +13,4 @@ export interface IConfig {
   SENDER_EMAIL: string;
   AWS_BUCKET: string;
   OTP_LEN: number;
-  ML_POST_INPUT_QUEUE: string;
-  ML_POST_OUTPUT_QUEUE: string;
-  INSTAGRAM_CLIENT_SECRET: string;
-  INSTAGRAM_CLIENT_ID: string;
 }

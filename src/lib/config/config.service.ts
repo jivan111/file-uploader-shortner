@@ -21,10 +21,7 @@ const APP_CONFIGURATION: IConfig = {
   SENDER_EMAIL: process.env.SENDER_EMAIL,
   AWS_BUCKET: process.env.AWS_BUCKET,
   OTP_LEN: Number(process.env.OTP_LEN),
-  ML_POST_INPUT_QUEUE: process.env.ML_POST_INPUT_QUEUE,
-  ML_POST_OUTPUT_QUEUE: process.env.ML_POST_OUTPUT_QUEUE,
-  INSTAGRAM_CLIENT_SECRET: process.env.INSTAGRAM_CLIENT_SECRET,
-  INSTAGRAM_CLIENT_ID: process.env.INSTAGRAM_CLIENT_ID,
+
 };
 
 const ConfigSchema = Joi.object<IConfig>({
@@ -40,11 +37,7 @@ const ConfigSchema = Joi.object<IConfig>({
   AWS_SECRET_ACCESS_KEY: Joi.string().required(),
   AWS_ACCESS_KEY_ID: Joi.string().required(),
   AWS_BUCKET: Joi.string().required(),
-  ML_POST_INPUT_QUEUE: Joi.string().required(),
-  ML_POST_OUTPUT_QUEUE: Joi.string().required(),
   OTP_LEN: Joi.number().required(),
-  INSTAGRAM_CLIENT_SECRET: Joi.string().required(),
-  INSTAGRAM_CLIENT_ID: Joi.string().required(),
 });
 
 @Injectable()

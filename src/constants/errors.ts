@@ -23,7 +23,7 @@ export const OTP_MISMATCH = {
   code: 4005,
 };
 
-export const INFLUENCER_NOT_FOUND = {
-  messsage: 'Influencer not found',
+export const user_NOT_FOUND = {
+  messsage: 'User not found',
   code: 4006,
 };

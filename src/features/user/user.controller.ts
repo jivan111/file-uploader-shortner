@@ -16,7 +16,7 @@ import {
 } from './dto/create-user.dto';
 import { UpdateInfluencerDto, VerifyOtpDto } from './dto/update-influencer.dto';
 import { AuthGuard } from '@src/common/guards/auth.guard';
-import { Influencer } from '@src/common/decorators/user.decorator';
+import { User } from '@src/common/decorators/user.decorator';
 @Controller('influencer')
 export class UserController {
   constructor(private readonly userService: UserService) { }
@@ -58,7 +58,7 @@ export class UserController {
   @UseGuards(AuthGuard)
   @Put('update-profile')
   update(
-    @Influencer('id') id: string,
+    @User('id') id: string,
     @Body() updateInfluencerDto: UpdateInfluencerDto,
   ) {
     return this.userService.update(id, updateInfluencerDto);

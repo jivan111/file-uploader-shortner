@@ -5,8 +5,7 @@ import { ConfigService } from '@lib/config/config.service';
 import { Post, PostDocument } from './entities/post.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, QueryOptions, UpdateQuery } from 'mongoose';
-// @InjectModel(Influencer.name)
-// private readonly model: Model<InfluencerDocument>,
+
 @Injectable()
 export class PostsService {
 
@@ -17,7 +16,7 @@ export class PostsService {
     private readonly model: Model<PostDocument>,
   ) { }
 
-  create(createPostDto: CreatePostDto & { influencerId: string }) {
+  create(createPostDto: CreatePostDto & { userId: string }) {
     return this.model.create(createPostDto);
   }
 
