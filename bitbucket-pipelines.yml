@@ -1,0 +1,40 @@
+image: node:18
+
+definitions:
+  steps:
+    - step: &Lint-step
+        name: Linting
+        caches:
+          - node
+        script:
+          - npm i -D eslint
+          - npm run lint
+    - step: &Build-step
+        name: Build Test
+        caches:
+          - node
+        script:
+          - npm i
+          - npm run build
+
+pipelines:
+  default:
+    - parallel:
+        - step: *Lint-step
+        - step: *Build-step
+  branches:
+    development:
+      - parallel:
+          - step: *Lint-step
+          - step: *Build-step
+      - step:
+          name: Deploy to Development Server
+          deployment: Development
+          script:
+            - pipe: atlassian/ssh-run:0.4.1
+              variables:
+                SSH_USER: $SSH_USER
+                SERVER: $SSH_SERVER
+                SSH_KEY: $SSH_KEY
+                MODE: 'script'
+                COMMAND: 'deploy.sh'
