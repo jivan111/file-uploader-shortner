@@ -29,8 +29,12 @@ export class PostsService {
     return this.model.findByIdAndUpdate(id, updateQuery, options);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} post`;
+  async find(findQuery) {
+    return this.model.find(findQuery).lean();
+  }
+
+  async findOne(findQuery) {
+    return this.model.findOne(findQuery).lean();
   }
 
   async uploadMedia(influencerId: string, uploadMediaDto: UploadMediaDto) {
@@ -46,6 +50,7 @@ export class PostsService {
       data: {
         url: response,
         filePath: filePath,
+        fileUrl: `https://testbuckv1.s3.us-east-2.amazonaws.com/${filePath}`
       },
     };
   }

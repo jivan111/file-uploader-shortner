@@ -9,7 +9,7 @@ export class Server {
   constructor(
     private readonly app: INestApplication,
     private readonly configService: ConfigService,
-  ) {}
+  ) { }
 
   static init(app: INestApplication, config: ConfigService) {
     return new Server(app, config);
@@ -27,6 +27,7 @@ export class Server {
       origin: [
         'http://localhost',
         'http://localhost:3000',
+        'http://localhost:3000/',
         'https://localhost:3000',
         'http://3.82.83.245:4000',
         'https://3.82.83.245:4000',

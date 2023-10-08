@@ -11,7 +11,7 @@ export class S3Service implements IStorage {
   private s3Client;
   constructor() {
     this.s3Client = new S3Client({
-      region: 'us-east-1',
+      region: 'us-east-2',
     });
   }
 

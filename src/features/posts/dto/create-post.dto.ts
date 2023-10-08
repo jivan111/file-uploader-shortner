@@ -1,7 +1,19 @@
 import { IsEnum, IsString } from 'class-validator';
 export class CreatePostDto {
   @IsString()
-  videoUrl: string;
+  fileUrl: string;
+
+  @IsString()
+  fileType: string;
+
+  @IsString()
+  fileName: string;
+
+  @IsString()
+  fileSize: string;
+
+  @IsString()
+  userId: string;
 
 }
 
@@ -11,4 +23,7 @@ export class UploadMediaDto {
 
   @IsString()
   fileName: string;
+
+  @IsString()
+  fileSize: string;
 }

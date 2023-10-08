@@ -3,19 +3,26 @@ import { ISendEmail, SendEmailProp } from '../interface/email.interface';
 import * as AWS from 'aws-sdk';
 import { ConfigService } from '@src/lib/config/config.service';
 
-const ses = new AWS.SES({
-  apiVersion: '2010-12-01',
-  region: 'us-east-1',
-});
+
 
 @Injectable()
 export class SesService implements ISendEmail {
-  constructor(private readonly configService: ConfigService) {}
+
+  ses: any
+  constructor(private readonly configService: ConfigService) {
+    this.ses = new AWS.SES({
+      apiVersion: '2010-12-01',
+      region: 'us-east-1',
+      accessKeyId: this.configService.get("AWS_ACCESS_KEY_ID"),
+      secretAccessKey: this.configService.get("AWS_SECRET_ACCESS_KEY"),
+
+    });
+  }
 
   async sendEmail(payload: SendEmailProp) {
     const { emails, subject, message } = payload;
     const params: AWS.SES.SendEmailRequest = {
-      Source: `Aether Pantheon <${this.configService.get('SENDER_EMAIL')}>`,
+      Source: `<${this.configService.get('SENDER_EMAIL')}>`,
       Destination: {
         ToAddresses: emails,
       },
@@ -31,6 +38,6 @@ export class SesService implements ISendEmail {
       },
     };
 
-    return ses.sendEmail(params).promise();
+    return this.ses.sendEmail(params).promise();
   }
 }

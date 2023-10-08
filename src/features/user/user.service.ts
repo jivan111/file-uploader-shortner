@@ -1,9 +1,9 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import {
-  CreateInfluencerDto,
-  LoginInfluencerDto,
+  CreateUserDto,
+  LoginUserDto,
 } from './dto/create-user.dto';
-import { UpdateInfluencerDto, VerifyOtpDto } from './dto/update-influencer.dto';
+import { UpdateUserDto, VerifyOtpDto } from './dto/update-user.dto';
 import { User, UserDocument } from './entities/user.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { CommonUtilService } from '@src/util/common-util.service';
@@ -15,7 +15,7 @@ import { EmailService } from '@lib/communication/email/email.service';
 import { AppJwtService } from '@src/lib/jwt/jwt.service';
 import {
   EMAIL_SENT_ERROR,
-  INFLUENCER_ALREADY_EXIST,
+  User_ALREADY_EXIST,
   INVALID_CREDENTIALS,
   OTP_MISMATCH,
 } from '@src/constants/errors';
@@ -30,41 +30,41 @@ export class UserService {
     private readonly appJwtService: AppJwtService,
   ) { }
 
-  async create(createInfluencerDto: CreateInfluencerDto) {
-    const influencer = await this.model.findOne({
-      email: createInfluencerDto.email,
+  async create(createUserDto: CreateUserDto) {
+    const User = await this.model.findOne({
+      email: createUserDto.email,
     });
 
-    if (influencer)
+    if (User)
       throw new HttpException(
-        INFLUENCER_ALREADY_EXIST,
+        User_ALREADY_EXIST,
         HttpStatus.UNAUTHORIZED,
       );
 
-    // hash password ,generate otp,create new influencer,send email
+    // hash password ,generate otp,create new User,send email
     const otp = this.commonUtilsService.generateRandomNumber(
       this.configService.get('OTP_LEN'),
     ),
-      hashedPassword = await hash(createInfluencerDto.password, 12);
+      hashedPassword = await hash(createUserDto.password, 12);
 
     return this.model
       .findOneAndUpdate(
-        { email: createInfluencerDto.email },
+        { email: createUserDto.email },
         {
-          ...createInfluencerDto,
+          ...createUserDto,
           password: hashedPassword,
-          otp: 9999,
+          otp: otp,
           otpSentAt: new Date(),
         },
         { upsert: true, new: true },
       )
-      .then(async (influencer) => {
+      .then(async (User) => {
         await this.emailService.sendEmail({
-          emails: [createInfluencerDto.email],
+          emails: [createUserDto.email],
           subject: 'Signup Otp',
           message: `Your signup otp is ${otp}`,
         });
-        return { data: influencer };
+        return { data: User };
       })
       .catch((err) => {
         return err;
@@ -76,7 +76,7 @@ export class UserService {
   }
 
   findAll() {
-    return `This action returns all influencer`;
+    return `This action returns all User`;
   }
 
   findOne(query: QueryOptions<User>) {
@@ -92,58 +92,58 @@ export class UserService {
     return this.model.findOneAndUpdate(query, update, options || {});
   }
 
-  async update(id: string, updateInfluencerDto: UpdateInfluencerDto) {
-    if (updateInfluencerDto.password)
-      updateInfluencerDto.password = await hash(
-        updateInfluencerDto.password,
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    if (updateUserDto.password)
+      updateUserDto.password = await hash(
+        updateUserDto.password,
         12,
       );
 
     const updateQuery = {
-      $set: updateInfluencerDto,
+      $set: updateUserDto,
     };
 
-    if (updateInfluencerDto.contentArea) {
+    if (updateUserDto.contentArea) {
       updateQuery['$addToSet'] = {
-        contentArea: { $each: updateInfluencerDto.contentArea },
+        contentArea: { $each: updateUserDto.contentArea },
       };
-      delete updateInfluencerDto.contentArea;
+      delete updateUserDto.contentArea;
     }
-    if (updateInfluencerDto.motivation) {
+    if (updateUserDto.motivation) {
       updateQuery['$addToSet'] = {
-        motivation: { $each: updateInfluencerDto.motivation },
+        motivation: { $each: updateUserDto.motivation },
       };
-      delete updateInfluencerDto.motivation;
+      delete updateUserDto.motivation;
     }
 
-    updateQuery['$set'] = updateInfluencerDto;
+    updateQuery['$set'] = updateUserDto;
 
     return this.model.findByIdAndUpdate(id, updateQuery, { new: true });
   }
 
   remove(id: number) {
-    return `This action removes a #${id} influencer`;
+    return `This action removes a #${id} User`;
   }
 
-  async login(loginInfluencerDto: LoginInfluencerDto) {
-    const influencer = await this.findOne({
-      email: loginInfluencerDto.email,
+  async login(loginUserDto: LoginUserDto) {
+    const User = await this.findOne({
+      email: loginUserDto.email,
       isVerified: true,
     });
     if (
-      !influencer ||
-      !(await compare(loginInfluencerDto.password, influencer.password))
+      !User ||
+      !(await compare(loginUserDto.password, User.password))
     ) {
       throw new HttpException(INVALID_CREDENTIALS, HttpStatus.UNAUTHORIZED);
     }
     // generate token and send to frontend
-    // return influencer
+    // return User
     const token = await this.appJwtService.getToken({
-      id: influencer._id.toString(),
-      email: influencer.email,
+      id: User._id.toString(),
+      email: User.email,
     });
 
-    return { token, data: influencer };
+    return { token, data: User };
   }
 
   async forgotPassword(forgotPass: { email: string }) {
@@ -151,16 +151,16 @@ export class UserService {
       this.configService.get('OTP_LEN'),
     );
 
-    const influencer = await this.findOneAndUpdate(forgotPass, {
+    const User = await this.findOneAndUpdate(forgotPass, {
       $set: { otp: otp, otpSentAt: new Date() },
     });
 
-    if (!influencer)
+    if (!User)
       throw new HttpException(INVALID_CREDENTIALS, HttpStatus.UNAUTHORIZED);
 
     return this.emailService
       .sendEmail({
-        emails: [influencer.email],
+        emails: [User.email],
         subject: 'Password reset Otp',
         message: `Your forgot password otp is ${otp}`,
       })
@@ -174,19 +174,19 @@ export class UserService {
   }
 
   async verifyOtp(verifyOtp: VerifyOtpDto) {
-    const influencer = await this.findOneAndUpdate(
+    const User = await this.findOneAndUpdate(
       { email: verifyOtp.email, otp: verifyOtp.otp },
       { $set: { isVerified: true, otp: '' } },
     );
 
-    if (!influencer)
+    if (!User)
       throw new HttpException(OTP_MISMATCH, HttpStatus.UNAUTHORIZED);
 
     const token = await this.appJwtService.getToken({
-      id: influencer.id,
-      email: influencer.email,
+      id: User.id,
+      email: User.email,
     });
 
-    return { token: token, data: influencer };
+    return { token: token, data: User };
   }
 }

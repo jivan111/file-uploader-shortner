@@ -3,8 +3,8 @@ export const INVALID_AUTH_TOKEN = {
   code: 4001,
 };
 
-export const INFLUENCER_ALREADY_EXIST = {
-  message: 'Influencer already exists',
+export const User_ALREADY_EXIST = {
+  message: 'User already exists',
   code: 4002,
 };
 
@@ -27,3 +27,9 @@ export const user_NOT_FOUND = {
   messsage: 'User not found',
   code: 4006,
 };
+
+
+export const Invali_Short_Code = {
+  messsage: 'Invalid Short Code',
+  code: 4007,
+}

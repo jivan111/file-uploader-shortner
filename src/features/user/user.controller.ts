@@ -11,25 +11,25 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import {
-  CreateInfluencerDto,
-  LoginInfluencerDto,
+  CreateUserDto,
+  LoginUserDto,
 } from './dto/create-user.dto';
-import { UpdateInfluencerDto, VerifyOtpDto } from './dto/update-influencer.dto';
+import { UpdateUserDto, VerifyOtpDto } from './dto/update-user.dto';
 import { AuthGuard } from '@src/common/guards/auth.guard';
 import { User } from '@src/common/decorators/user.decorator';
-@Controller('influencer')
+@Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) { }
 
   @Post('/signup')
-  create(@Body() createInfluencerDto: CreateInfluencerDto) {
-    return this.userService.create(createInfluencerDto);
+  create(@Body() createUserDto: CreateUserDto) {
+    return this.userService.create(createUserDto);
   }
 
   @Post('/login')
   @HttpCode(200)
-  login(@Body() loginInfluencerDto: LoginInfluencerDto) {
-    return this.userService.login(loginInfluencerDto);
+  login(@Body() loginUserDto: LoginUserDto) {
+    return this.userService.login(loginUserDto);
   }
   @Get()
   findAll() {
@@ -39,15 +39,15 @@ export class UserController {
   @Put('forgot-password')
   async forgotPassword(@Body() forgotPass: { email: string }) {
     return this.userService.forgotPassword(forgotPass);
-    // let influencer = this.userService.findOne(forgotPass)
-    // if (influencer)
+    // let User = this.userService.findOne(forgotPass)
+    // if (User)
   }
 
-  @Put('verify-otp')
+  @Post('verify-otp')
   async verifyOtp(@Body() verifyOtp: VerifyOtpDto) {
     return this.userService.verifyOtp(verifyOtp);
-    // let influencer = this.userService.findOne(forgotPass)
-    // if (influencer)
+    // let User = this.userService.findOne(forgotPass)
+    // if (User)
   }
 
   @Get(':id')
@@ -59,9 +59,9 @@ export class UserController {
   @Put('update-profile')
   update(
     @User('id') id: string,
-    @Body() updateInfluencerDto: UpdateInfluencerDto,
+    @Body() updateUserDto: UpdateUserDto,
   ) {
-    return this.userService.update(id, updateInfluencerDto);
+    return this.userService.update(id, updateUserDto);
   }
 
   @Delete(':id')

@@ -1,11 +1,10 @@
 import { IsEmail, IsString } from 'class-validator';
 
-export class CreateInfluencerDto {
+export class CreateUserDto {
   @IsString()
-  firstName;
+  name;
 
-  @IsString()
-  lastName;
+
 
   @IsEmail()
   email;
@@ -14,7 +13,7 @@ export class CreateInfluencerDto {
   password;
 }
 
-export class LoginInfluencerDto {
+export class LoginUserDto {
   @IsEmail()
   email;
 

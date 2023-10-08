@@ -6,7 +6,7 @@ import {
   ArrayMinSize,
 } from 'class-validator';
 
-export class UpdateInfluencerDto {
+export class UpdateUserDto {
   @IsString()
   @IsOptional()
   firstName;
